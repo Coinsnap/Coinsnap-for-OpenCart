@@ -30,14 +30,14 @@ Incoming Bitcoin payments are directly forwarded and credited to your Lightning 
 
 == Installation ==
 
-1. Login to the OpenCart 4 Admin Panel
+1. Login to the OpenCart 4 Admin Panel.
 
-2. Navigate to Extensions -> Extension and click on button Upload and choose the zip file with plugin
+2. Navigate to Extensions -> Extension and click on button Upload and choose the zip file with plugin.
 
-3. Select Coinsnap Payment Extension and click install 
+3. Select Coinsnap Payment Extension and click install. 
 
-4. Navigate to Extensions -> Payments and click install on Coinsnap
+4. Navigate to Extensions -> Payments and click install on Coinsnap.
 
-5. Cick Edit and enter config info (Store Id and API Key) and save	
+5. Click "Edit", enter config info (Store Id and API Key) and save.	
 
 	

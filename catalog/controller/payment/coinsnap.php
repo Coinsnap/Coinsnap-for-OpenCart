@@ -1,6 +1,6 @@
 <?php
 namespace Opencart\Catalog\Controller\Extension\Coinsnap\Payment;
-
+define( 'COINSNAP_REFERRAL_CODE', 'D19823' );
 require_once(DIR_EXTENSION.'coinsnap/library/autoload.php');
 
 
@@ -117,7 +117,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
 			$buyerEmail,
 			$buyerName, 
 			$redirectUrl,
-			'',     
+			COINSNAP_REFERRAL_CODE,     
 			$metadata,
 			$checkoutOptions
 		);

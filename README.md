@@ -30,14 +30,49 @@ Incoming Bitcoin payments are directly forwarded and credited to your Lightning 
 
 == Installation ==
 
-1. Login to the OpenCart 4 Admin Panel.
+## Install Opencart plugin via Github ##
 
-2. Navigate to Extensions -> Extension and click on button Upload and choose the zip file with plugin.
+Obtain the plugin by clicking on the green “Clone or download” button and selecting “Download ZIP” from the dropdown menu.
 
-3. Select Coinsnap Payment Extension and click install. 
+![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/extensions.png)
 
-4. Navigate to Extensions -> Payments and click install on Coinsnap.
+#### (1) Navigate to extensions ####
+Find and select the “Extensions” section on the left-hand side of the Opencart login page.
 
-5. Click "Edit", enter config info (Store Id and API Key) and save.	
+#### (2) Access to the installer ####
+In the “Extensions” section, find the “Installer” subsection and click on it to continue.
 
+#### (3) Upload ZIP file ####
+On the right-hand side you will find a blue “Upload” button. Click on it and proceed to upload the downloaded file.
+
+#### (4) Install Coinsnap payment extensions ####
+Click on the button to install the Coinsnap Payment Extensions. After successful installation, the button should now be highlighted in orange.
 	
+![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/payments.png)
+
+#### (1) Navigate to extensions ####
+Find and select the “Extensions” section on the left-hand side of the Opencart login page.
+
+#### (2) Navigate to the subsection Extensions ####
+Within the “Extensions” section, search for the “Extensions” subsection and click on it to continue.
+
+#### (3) Payments ####
+Under “Select the extension type”, search for the payment category and select it.
+
+![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/edit.png) 
+
+After you have selected “Payments”, scroll down to find Coinsnap as a payment method.
+
+Click on the “Edit” button on the right-hand side.
+
+![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/coinsnap-store.png) 
+
+Enter your login details in your Coinsnap app and navigate to the settings.
+
+Look for the “Store settings” section in the settings, where you can access your store ID and API key. Copy these login details for future use.
+
+![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/opencart-store.png) 
+
+If you click on the “Edit” button, fields are displayed in which you must enter the previously copied store ID and the API key.
+
+Fill in these fields and your integration with the Coinsnap app will be successfully completed. You are now ready to accept Bitcoin+Lightning payments.

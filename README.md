@@ -34,7 +34,7 @@ Incoming Bitcoin payments are directly forwarded and credited to your Lightning 
 
 Obtain the plugin by clicking on the green “Clone or download” button and selecting “Download ZIP” from the dropdown menu.
 
-![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/extensions.png)
+![](https://coinsnap.io/wp-content/uploads/2023/12/Screenshot-2023-12-21-at-20.16.04.png)
 
 #### (1) Navigate to extensions ####
 Find and select the “Extensions” section on the left-hand side of the Opencart login page.
@@ -48,7 +48,7 @@ On the right-hand side you will find a blue “Upload” button. Click on it and
 #### (4) Install Coinsnap payment extensions ####
 Click on the button to install the Coinsnap Payment Extensions. After successful installation, the button should now be highlighted in orange.
 	
-![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/payments.png)
+![](https://coinsnap.io/wp-content/uploads/2023/12/Screenshot-2023-12-21-at-20.16.38.png)
 
 #### (1) Navigate to extensions ####
 Find and select the “Extensions” section on the left-hand side of the Opencart login page.
@@ -59,19 +59,19 @@ Within the “Extensions” section, search for the “Extensions” subsection 
 #### (3) Payments ####
 Under “Select the extension type”, search for the payment category and select it.
 
-![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/edit.png) 
+![](https://coinsnap.io/wp-content/uploads/2023/12/Screenshot-2023-12-21-at-20.17.03.png) 
 
 After you have selected “Payments”, scroll down to find Coinsnap as a payment method.
 
 Click on the “Edit” button on the right-hand side.
 
-![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/coinsnap-store.png) 
+![](https://coinsnap.io/wp-content/uploads/2023/11/Screenshot-2023-11-30-at-10.22.46.png) 
 
 Enter your login details in your Coinsnap app and navigate to the settings.
 
 Look for the “Store settings” section in the settings, where you can access your store ID and API key. Copy these login details for future use.
 
-![](https://github.com/Coinsnap/Coinsnap-for-OpenCart/blob/main/assets/opencart-store.png) 
+![](https://coinsnap.io/wp-content/uploads/2023/12/Screenshot-2023-12-21-at-20.17.20.png) 
 
 If you click on the “Edit” button, fields are displayed in which you must enter the previously copied store ID and the API key.
 

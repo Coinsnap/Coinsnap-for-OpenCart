@@ -1,4 +1,6 @@
-# Coinsnap for Opencart Payment Plugin
+# Coinsnap for OpenCart payment plugin #
+![Image of Coinsnap for OpenCart](https://coinsnap.io/wp-content/uploads/2023/11/coinsnap-for-opencart.png)
+## Accept Bitcoin and Lightning Payments with OpenCart ##
 
 Accept Bitcoin and Ligtning payments in Opencart with Coinsnap
 

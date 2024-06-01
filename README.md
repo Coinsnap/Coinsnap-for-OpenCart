@@ -67,7 +67,7 @@ After you have selected “Payments”, scroll down to find Coinsnap as a paymen
 
 Click on the “Edit” button on the right-hand side.
 
-![](https://coinsnap.io/wp-content/uploads/2023/11/Screenshot-2023-11-30-at-10.22.46.png) 
+![](https://coinsnap.io/wp-content/uploads/2023/11/Screenshot-2024-05-27-at-08.16.52.png) 
 
 Enter your login details in your Coinsnap app and navigate to the settings.
 

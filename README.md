@@ -21,7 +21,7 @@ Opencart is an easy to-use, powerful, Open Source online store management progra
 
 An OpenCart store can be ready to take orders soon after installation. All the webstore admin has to do is have it installed, select a template from the many free or low-cost template sites, add product descriptions and photos, click a few settings, and the store will ready to begin accepting orders. The public side or “Storefront” of OpenCart looks very professional and ready to sell almost as soon as it is installed.
 
-* Coinsnap Opencart Demo Site: [https://opencart.coinsnap.net/](https://opencart.coinsnap.net/)
+* Coinsnap Opencart Demo Site: [https://opencart.coinsnap.org/](https://opencart.coinsnap.org/)
 * Blog Article: [https://coinsnap.io/coinsnap-for-opencart-payment-plugin/](https://coinsnap.io/coinsnap-for-opencart-payment-plugin/)
 * Extension page: [https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=45998](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=45998)
 * GitHub: [https://github.com/Coinsnap/Coinsnap-for-Opencart](https://github.com/Coinsnap/Coinsnap-for-Opencart)

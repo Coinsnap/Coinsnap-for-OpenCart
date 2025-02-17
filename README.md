@@ -28,7 +28,7 @@ An OpenCart store can be ready to take orders soon after installation. All the w
 
 ## Bitcoin and Lightning payments in Opencart ##
 
-![Gambio Shop](https://resources.coinsnap.org/products/opencart/images/screenshot-opencart.png)
+![Opencart Shop](https://resources.coinsnap.org/products/opencart/images/screenshot-opencart.png)
 
 Coinsnap is a Lightning payment provider and offers a payment gateway for processing Bitcoin and Lightning payments. A merchant only needs a Lightning wallet with a lightning address to accept Bitcoin and Lightning payments on his web store.
 
@@ -36,9 +36,9 @@ OpenCart plugins, also known as extensions, are additional software that improve
 
 With the Coinsnap payment plugin for Opencart, shop operators can effortlessly process Bitcoin and Lightning payments from their customers. Just install the Coinsnap Opencart plugin, connect it to your Coinsnap account and your customers will be able to pay you with Bitcoin and Lightning. Incoming Bitcoin payments are directly forwarded and credited to your Lightning Wallet.
 
-With the Coinsnap Bitcoin Lightning payment processing plugin you can immediately accept Bitcoin Lightning payments on your site. You don’t need your own Lightning node or any other technical requirements if you'd like to provide payments via Coinsnap payment gateway. Coinsnap Bitcoin and Lightning payment requires no minimum costs, no fixed contracts, no hidden costs. The Gambio payment plugin from Coinsnap can be downloaded and installed free of charge.
+With the Coinsnap Bitcoin Lightning payment processing plugin you can immediately accept Bitcoin Lightning payments on your site. You don’t need your own Lightning node or any other technical requirements if you'd like to provide payments via Coinsnap payment gateway. Coinsnap Bitcoin and Lightning payment requires no minimum costs, no fixed contracts, no hidden costs. The Opencart payment plugin from Coinsnap can be downloaded and installed free of charge.
 
-Simply register on [Coinsnap](https://app.coinsnap.io/register), enter your own Lightning address, upload and install the Coinsnap payment module in Gambio Shop backend. Add your store ID and your API key which you’ll find in your Coinsnap account, and your customers can pay you with Bitcoin Lightning right away!
+Simply register on [Coinsnap](https://app.coinsnap.io/register), enter your own Lightning address, upload and install the Coinsnap payment module in Opencart Shop backend. Add your store ID and your API key which you’ll find in your Coinsnap account, and your customers can pay you with Bitcoin Lightning right away!
 
 ## Features ##
 

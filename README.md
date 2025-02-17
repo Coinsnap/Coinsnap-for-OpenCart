@@ -91,29 +91,31 @@ Simply register on [Coinsnap](https://app.coinsnap.io/register), enter your own 
 
 You can find detailed instructions to facilitate the seamless integration of Opencart with the Coinsnap app.
 
+### 1. Install Opencart plugin via Github ###
 
-
-
-
-### Install Opencart plugin via Github ###
+### 1.1. Plugin download ###
 
 Obtain the plugin by clicking on the green “Clone or download” button and selecting “Download ZIP” from the dropdown menu.
 
+### 1.2. Coinsnap payment extension installation ###
+
 ![](https://resources.coinsnap.org/products/opencart/images/screenshot-01.png)
 
-#### (1) Navigate to extensions ####
+##### (1) Navigate to extensions #####
 Find and select the “Extensions” section on the left-hand side of the Opencart login page.
 
-#### (2) Access to the installer ####
+##### (2) Access to the installer #####
 In the “Extensions” section, find the “Installer” subsection and click on it to continue.
 
-#### (3) Upload ZIP file ####
+##### (3) Upload ZIP file #####
 On the right-hand side you will find a blue “Upload” button. Click on it and proceed to upload the downloaded file.
 
-#### (4) Install Coinsnap payment extensions ####
+##### (4) Install Coinsnap payment extension #####
 Click on the button to install the Coinsnap Payment Extensions. After successful installation, the button should now be highlighted in orange.
 	
 ![](https://resources.coinsnap.org/products/opencart/images/screenshot-02.png)
+
+### 1.3. Coinsnap payment extension configuration ###
 
 #### (1) Navigate to extensions ####
 Find and select the “Extensions” section on the left-hand side of the Opencart login page.
@@ -138,9 +140,40 @@ Look for the “Store settings” section in the settings, where you can access 
 
 ![](https://resources.coinsnap.org/products/opencart/images/screenshot-05.png) 
 
-If you click on the “Edit” button, fields are displayed in which you must enter the previously copied store ID and the API key.
+If you click on the “Edit” button, fields are displayed in which you must enter the previously copied Store ID and the API key.
 
 Fill in these fields and your integration with the Coinsnap app will be successfully completed. You are now ready to accept Bitcoin+Lightning payments.
+
+## 2. Create Coinsnap account ##
+
+### 2.1. Register in Coinsnap App ###
+
+Now go to the Coinsnap website at: [https://app.coinsnap.io/register](https://app.coinsnap.io/register) and open an account by entering your email address and a password of your choice.
+
+![Coinsnap registration](https://resources.coinsnap.org/products/magento/images/screenshot-07.png)
+
+If you are using a Lightning Wallet with Lightning Login, then you can also open a Coinsnap account with it.
+
+### 2.2. Confirm email address ###
+
+You will receive an email to the given email address with a confirmation link, which you have to confirm. If you do not find the email, please check your spam folder.
+
+![E-mail address confirmation](https://resources.coinsnap.org/products/magento/images/screenshot-08.png)
+
+Then please log in to the Coinsnap backend with the appropriate credentials.
+
+### 2.3. Set up website at Coinsnap ###
+
+After you sign up, you will be asked to provide two pieces of information.
+
+In the Website Name field, enter the name of your online store that you want customers to see when they check out.
+
+In the Lightning Address field, enter the Lightning address to which the Bitcoin and Lightning transactions should be forwarded.
+
+A Lightning address is similar to an e-mail address. Lightning payments are forwarded to this Lightning address and paid out. If you don’t have a Lightning address yet, set up a Lightning wallet that will provide you with a Lightning address.
+
+For more information on Lightning addresses and the corresponding Lightning wallet providers, click here:
+https://coinsnap.io/lightning-wallet-mit-lightning-adresse/
 
 # Wiki
 

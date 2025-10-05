@@ -248,12 +248,22 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 		
 	if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {			
 			
-            $this->request->post['payment_coinsnap_webhook'] = $this->model_setting_setting->getValue('payment_coinsnap_webhook');
+            if($this->model_setting_setting->getValue('payment_coinsnap_webhook') !== null){
+                $this->request->post['payment_coinsnap_webhook'] = $this->model_setting_setting->getValue('payment_coinsnap_webhook');
+            }
+            else {
+                $this->request->post['payment_coinsnap_webhook'] = '';
+            }
             
             $this->model_setting_setting->editSetting('payment_coinsnap', $this->request->post);
+            
+            $provider = ($this->request->post['payment_coinsnap_provider'] === 'btcpay')? 'btcpay' : 'coinsnap';
+            $api_url =  ($provider === 'btcpay')? $this->request->post['payment_coinsnap_btcpay_server_url'] : COINSNAP_SERVER_URL;
+            $store_id = ($provider === 'btcpay')? $this->request->post['payment_coinsnap_btcpay_store_id'] : $this->request->post['payment_coinsnap_store_id'];			
+            $api_key =  ($provider === 'btcpay')? $this->request->post['payment_coinsnap_btcpay_api_key'] : $this->request->post['payment_coinsnap_api_key'];
                     
-            if (! $this->webhookExists($this->getApiUrl(), $this->getApiKey(), $this->getStoreId())){
-                if (! $this->registerWebhook($this->getApiUrl(), $this->getApiKey(), $this->getStoreId())) {
+            if (! $this->webhookExists($api_url, $api_key, $store_id)){
+                if (! $this->registerWebhook($api_url, $api_key, $store_id, $provider)) {
                     $json['error'] = $this->language->get('error_webhook');										
                 }
                 else {
@@ -264,8 +274,8 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
                 $json['info'] = 'Webhook exists';
             }
             
-            $client = new \Coinsnap\Client\Invoice($this->getApiUrl(), $this->getApiKey());
-            $store = new \Coinsnap\Client\Store($this->getApiUrl(), $this->getApiKey());
+            $client = new \Coinsnap\Client\Invoice($api_url, $api_key);
+            $store = new \Coinsnap\Client\Store($api_url, $api_key);
             $currency = $this->model_setting_setting->getValue('config_currency');
             if(!isset($currency) || $currency === null){
                 $currency = 'EUR';
@@ -276,7 +286,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
             if ($this->request->post['payment_coinsnap_provider'] === 'btcpay') {
 
                     try {
-                        $storePaymentMethods = $store->getStorePaymentMethods($this->getStoreId());
+                        $storePaymentMethods = $store->getStorePaymentMethods($store_id);
 
                         if ($storePaymentMethods['code'] === 200) {
                             if ($storePaymentMethods['result']['onchain'] && !$storePaymentMethods['result']['lightning']) {
@@ -424,12 +434,12 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
         return false;
     }
 	
-    public function registerWebhook(string $apiUrl, string $apiKey, string $storeId){
+    public function registerWebhook(string $apiUrl, string $apiKey, string $storeId, string $provider){
         $this->load->language('extension/coinsnap/payment/coinsnap');
         $this->load->model('setting/setting');
         try {
             $whClient = new Webhook($apiUrl, $apiKey);
-            $webhook_events = ($this->getProvider() === 'btcpay') ? self::BTCPAY_WEBHOOK_EVENTS : self::COINSNAP_WEBHOOK_EVENTS;
+            $webhook_events = ($provider === 'btcpay') ? self::BTCPAY_WEBHOOK_EVENTS : self::COINSNAP_WEBHOOK_EVENTS;
             $webhook = $whClient->createWebhook(
                 $storeId,   //$storeId
                 $this -> getWebhookUrl(), //$url

@@ -11,74 +11,58 @@
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The Coinsnap Opencart plugin allows you to accept Bitcoin and Ligtning payments in Opencart e-shop system
+The Coinsnap Opencart plugin allows you to accept Bitcoin and Ligtning payments in Opencart e-shop system via Coinsnap and BTCPay server gateways.
 
-## Description ##
+## Description
 
-[Coinsnap](https://coinsnap.io/en/) provides modules and plugins that enable online stores to receive Bitcoin payments from their customers' Bitcoin Lightning wallets to their own Bitcoin Lightning wallets for digital and physical goods.
+[Coinsnap](https://coinsnap.io/) provides modules and plugins that enable online stores to receive Bitcoin payments from their customers' Bitcoin Lightning wallets to their own Bitcoin Lightning wallets for digital and physical goods.
 
 Opencart is an easy to-use, powerful, Open Source online store management program that can manage multiple online stores from a single back-end. Administrative area simply by filling in forms and clicking “Save”.
 
 An OpenCart store can be ready to take orders soon after installation. All the webstore admin has to do is have it installed, select a template from the many free or low-cost template sites, add product descriptions and photos, click a few settings, and the store will ready to begin accepting orders. The public side or “Storefront” of OpenCart looks very professional and ready to sell almost as soon as it is installed.
+
+## Accept Bitcoin payments with Opencart in only 3 steps:
+
+1. Get your free [Coinsnap account](https://app.coinsnap.io) with just your email
+2. Install, activate and configure the plugin in your Opencart backend
+3. Activate Bitcoin payments in Opencart and accept Bitcoin payments from your customers
+
+## Why should you choose the Coinsnap for Opencart plugin?
+
+* **Amazingly simple installation** in just 3 steps and a few minutes
+* **Customizable checkout** for optimized customer experience
+* **Multilingual merchant admin dashboard** for easy administration and management of transactions.
+
+## Why should you choose Coinsnap as your Bitcoin payment solution?
+
+* **Quick and easy registration**: Just enter your email address and your Lightning address – and you are ready to integrate the payment module and start selling for Bitcoin Lightning.
+* **Immediate crediting of all payments** to your Lightning wallet.
+* Payment transfer **directly from your customer’s wallet to your wallet**.
+* **Instant conversion and crediting in euro possible** with Coinsnap and your Bringin Lightning address
+* **Low transaction fee** of only 1%* of the invoiced amount (*with referrer code).
+* **The plugin is free of cost**, including all future updates. Stay up-to-date at absolutely no cost today or in the future.
+* **Outstanding privacy**: Direct, P2P payments into your Lightning wallet, no intermediaries and paperwork. Any transaction information is only shared between you and your customer.
+* **Detailed reporting and advanced filtering** for all transactions, simple data export for your accounting.
+* **Sophisticated merchant’s admin dashboard in Coinsnap**: See all your transactions at a glance, follow-up on individual payments or see issues with payments.
+* **No need for any technical infrastructure**: Accept Bitcoin and Lightning payments in your online store without having to set up your own server or your own Lightning node.
+* **On-chain and Lightning transactions are supported**: Let your customers choose their preferred payment method.
+* **BTCPay Server ready**: connect your own BTCPay Server with Opencart in just a fes steps and a few minutes – no technical expertise needed!
+
+## Why should you offer Bitcoin payment in your Opencart shop?
+
+* **No chargebacks:** All Bitcoin payments are irreversible.
+* **Lightning fast transactions**: Receive your payment within seconds (with the Lightning payment method), in minutes with on-chain.
+* **Low fees** (with Lightning)
+* **Global reach**: Sell to any customer anywhere – all he needs to buy from you is a Lightning wallet.
+
+## More information:
 
 * Coinsnap Opencart Demo Site: [https://opencart.coinsnap.org/](https://opencart.coinsnap.org/)
 * Blog Article: [https://coinsnap.io/coinsnap-for-opencart-payment-plugin/](https://coinsnap.io/coinsnap-for-opencart-payment-plugin/)
 * Extension page: [https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=45998](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=45998)
 * GitHub: [https://github.com/Coinsnap/Coinsnap-for-Opencart](https://github.com/Coinsnap/Coinsnap-for-Opencart)
 
-## Bitcoin and Lightning payments in Opencart ##
-
 ![Opencart Shop](https://resources.coinsnap.org/products/opencart/images/screenshot-opencart.png)
-
-Coinsnap is a Lightning payment provider and offers a payment gateway for processing Bitcoin and Lightning payments. A merchant only needs a Lightning wallet with a lightning address to accept Bitcoin and Lightning payments on his web store.
-
-OpenCart plugins, also known as extensions, are additional software that improve the functionality of the OpenCart platform. These extensions can add various features and capabilities to an OpenCart shop, making it more customisable and able to meet specific business needs.
-
-With the Coinsnap payment plugin for Opencart, shop operators can effortlessly process Bitcoin and Lightning payments from their customers. Just install the Coinsnap Opencart plugin, connect it to your Coinsnap account and your customers will be able to pay you with Bitcoin and Lightning. Incoming Bitcoin payments are directly forwarded and credited to your Lightning Wallet.
-
-With the Coinsnap Bitcoin Lightning payment processing plugin you can immediately accept Bitcoin Lightning payments on your site. You don’t need your own Lightning node or any other technical requirements if you'd like to provide payments via Coinsnap payment gateway. Coinsnap Bitcoin and Lightning payment requires no minimum costs, no fixed contracts, no hidden costs. The Opencart payment plugin from Coinsnap can be downloaded and installed free of charge.
-
-Simply register on [Coinsnap](https://app.coinsnap.io/register), enter your own Lightning address, upload and install the Coinsnap payment module in Opencart Shop backend. Add your store ID and your API key which you’ll find in your Coinsnap account, and your customers can pay you with Bitcoin Lightning right away!
-
-## Features ##
-
-* **All you need is your email and a Lightning Wallet with a Lightning address. [Here you can find an overview of suitable Lightning Wallets](https://coinsnap.io/en/lightning-wallet-with-lightning-address/)**
-
-* **Accept Bitcoin and Lightning payments** in your online store **without running your own technical infrastructure.** You do not need your own server, nor do you need to run your own Lightning Node. You also do not need a shop-system, for you can sell right out of your forms using the Coinsnap for Content Form 7-plugin.
-
-* **Quick and easy registration at Coinsnap**: Just enter your email address and your Lightning address – and you are ready to integrate the payment module and start selling for Bitcoin Lightning. You will find the necessary IDs and Keys in your Coinsnap account, too.
-
-* **100% protected privacy**:
-    * We do not collect personal data.
-    * For the registration you only need an e-mail address, which we will also use to inform you when you have received a payment.
-    * No other personal information is required as long as you request a withdrawal to a Lightning address or Bitcoin address.
-
-* **Only 1 % fees!**:
-    * No basic fee, no transaction fee, only 1% on the invoice amount with referrer code.
-    * Without referrer code the fee is 1.25%.
-    * Get a referrer code from our [partners](https://coinsnap.io/en/partner/) and customers and save 0.25% fee.
-
-* **No KYC needed**:
-    * Direct, P2P payments (instantly to your Lightning wallet)
-    * No intermediaries and paperwork
-    * Transaction information is only shared between you and your customer
-
-* **Sophisticated merchant’s admin dashboard in Coinsnap:**:
-    * See all your transactions at a glance
-    * Follow-up on individual payments
-    * See issues with payments
-    * Export reports
-
-* **A Bitcoin payment via Lightning offers significant advantages**:
-    * Lightning **payments are executed immediately.**
-    * Lightning **payments are credited directly to the recipient.**
-    * Lightning **payments are inexpensive.**
-    * Lightning **payments are guaranteed.** No chargeback risk for the merchant.
-    * Lightning **payments can be used worldwide.**
-    * Lightning **payments are perfect for micropayments.**
-
-* **Multilingual interface and support**: We speak your language
-
 
 ## Documentation: ##
 
@@ -181,10 +165,10 @@ Read more about the integration configuration on [our Wiki](https://github.com/C
 
 # Changelog
 
-= 1.0.0 :: 2024-03-29 =
+#### 1.0.0 :: 2024-03-29
 * Initial release.
 
-= 1.1.0 :: 2025-10-04 =
+#### 1.1.0 :: 2025-10-04
 * Update: Coinsnap PHP library.
 * Update: BTCPay server added as a Bitcoin payment gateway
 * Update: Prevented redirect to BTCPay server if payment amount is less than 0.000005869 BTC (0.50 EUR) for onchain payments, 0.000001 BTC (1 SAT) for Lightning payment or Coinsnap currency is not supported.

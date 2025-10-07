@@ -229,7 +229,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
 
         if ($checkInvoice['result'] === true) {
             
-            $redirectUrl = HTTP_SERVER.'index.php?route=checkout/success';
+            $redirectUrl = (!empty($this->config->get('payment_coinsnap_returnurl')))? $this->config->get('payment_coinsnap_returnurl') : HTTP_SERVER.'index.php?route=checkout/success';
             $metadata = [];
             $metadata['orderNumber'] = $order_id;
             $metadata['customerName'] = $buyerName;
@@ -241,7 +241,15 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
             $redirectAutomatically = ($this->config->get('payment_coinsnap_autoredirect') > 0) ? true : false;
             $walletMessage = '';
 
-            $camount = \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);
+            // Handle currencies non-supported by BTCPay Server, we need to change them BTC and adjust the amount.
+            if (($currency === 'SATS' || $currency === 'RUB') && $this->config->get('payment_coinsnap_provider') === 'btcpay') {
+                $currency = 'BTC';
+                $rate = 1/$checkInvoice['rate'];
+                $amountBTC = bcdiv(strval($amount), strval($rate), 8);
+                $amount = (float)$amountBTC;
+            }
+        
+            $camount = ($currency === 'BTC')? \Coinsnap\Util\PreciseNumber::parseFloat($amount,8) : \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);
             
             $invoice = $client->createInvoice(
                 $this->getStoreId(),  
@@ -260,7 +268,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
             $payurl = $invoice->getData()['checkoutLink'] ;		
 		
             if ($payurl) {	
-                $comment = 'new';		
+                $comment = 'New';		
                 $this->model_checkout_order->addHistory($order_id, $this->config->get('payment_coinsnap_new_status'), $comment);
                 $this->clearCart();
                 $this->sessionClear();

@@ -29,7 +29,8 @@ $_['entry_btcpay_server_url']  			= 'BTCPay server URL';
 $_['entry_btcpay_store_id']  			= 'BTCPay Store ID';
 $_['entry_btcpay_api_key']  			= 'BTCPay API Key';
 
-$_['entry_autoredirect']  			= 'Redirect after payment';
+$_['entry_autoredirect']    = 'Redirect after payment';
+$_['entry_returnurl']       = 'Return URL after payment';
 
 $_['entry_new_status']     = 'New Status';
 $_['entry_expired_status']     = 'Expired Status';
@@ -57,6 +58,8 @@ $_['help_api_key']   	= 'Enter API Key Given by Coinsnap';
 $_['help_btcpay_server_url']   	= 'Enter BTCPay server URL';
 $_['help_btcpay_store_id']  	= 'Enter Store ID on BTCPay server';
 $_['help_btcpay_api_key']   	= 'Enter API Key for BTCPay server';
+
+$_['help_returnurl']   = 'Custom return URL after successful payment (default URL if blank)';
 
 // Error
 $_['error_permission']				= 'You do not have permission to modify Coinsnap payment module';

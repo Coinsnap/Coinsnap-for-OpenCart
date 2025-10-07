@@ -65,6 +65,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['payment_coinsnap_autoredirect'] = $this->config->get('payment_coinsnap_autoredirect');
 		}
                 
+                
 		$this->load->model('localisation/geo_zone');
 		$data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
 
@@ -99,13 +100,19 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 		$data['entry_new_status']	= $this->language->get('entry_new_status');		
 		$data['entry_expired_status']	= $this->language->get('entry_expired_status');				
 		$data['entry_settled_status']	= $this->language->get('entry_settled_status');		
-		$data['entry_processing_status']	= $this->language->get('entry_processing_status');	
+		$data['entry_processing_status']= $this->language->get('entry_processing_status');	
                 
                 $data['entry_autoredirect']     = $this->language->get('entry_autoredirect');
-		
+		$data['entry_returnurl']        = $this->language->get('entry_returnurl');
 		
 		$data['help_store_id']		= $this->language->get('help_store_id');		
-		$data['help_api_key']		= $this->language->get('help_api_key');				
+		$data['help_api_key']		= $this->language->get('help_api_key');	
+                
+                $data['help_btcpay_server_url'] = $this->language->get('help_btcpay_server_url');
+                $data['help_btcpay_store_id']  	= $this->language->get('help_btcpay_store_id');
+                $data['help_btcpay_api_key']   	= $this->language->get('help_btcpay_api_key');
+
+                $data['help_returnurl']   = $this->language->get('help_returnurl');
 		
 		//errors
 		
@@ -151,6 +158,12 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['payment_coinsnap_btcpay_api_key'] = $this->request->post['payment_coinsnap_btcpay_api_key'];
 		} else {
 			$data['payment_coinsnap_btcpay_api_key'] = $this->config->get('payment_coinsnap_btcpay_api_key');
+		}
+                
+                if (isset($this->request->post['payment_coinsnap_returnurl'])) {
+			$data['payment_coinsnap_returnurl'] = $this->request->post['payment_coinsnap_returnurl'];
+		} else {
+			$data['payment_coinsnap_returnurl'] = $this->config->get('payment_coinsnap_returnurl');
 		}
 		
 

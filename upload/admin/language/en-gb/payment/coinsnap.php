@@ -20,6 +20,11 @@ $_['entry_sort_order']   		= 'Sort order';
 $_['entry_method_name']   		= 'Method name';
 $_['entry_coinsnap_status'] = 'Module status';
 
+$_['entry_settings_title']  = 'Connection settings';
+$_['entry_status_title']  = 'Payment status';
+$_['entry_discount_title']  = 'Bitcoin discount settings';
+$_['entry_other_title']  = 'Other settings';
+
 $_['entry_provider']        = 'Provider';
 
 $_['entry_store_id']  			= 'Coinsnap Store ID';
@@ -31,6 +36,15 @@ $_['entry_btcpay_api_key']  			= 'BTCPay API Key';
 
 $_['entry_autoredirect']    = 'Redirect after payment';
 $_['entry_returnurl']       = 'Return URL after payment';
+
+$_['entry_discount_enabled']       = 'Discount enabled';
+$_['entry_discount_type']       = 'Discount type';
+$_['entry_discount_type_fixed']       = 'Fixed';
+$_['entry_discount_type_percentage'] = 'Percentage';
+
+$_['entry_discount_amount']       = 'Discount amount';
+$_['entry_discount_amount_limit']       = 'Max discount amount, %';
+$_['entry_discount_percentage']       = 'Discount amount, %';
 
 $_['entry_new_status']     = 'New Status';
 $_['entry_expired_status']     = 'Expired Status';
@@ -60,6 +74,11 @@ $_['help_btcpay_store_id']  	= 'Enter Store ID on BTCPay server';
 $_['help_btcpay_api_key']   	= 'Enter API Key for BTCPay server';
 
 $_['help_returnurl']   = 'Custom return URL after successful payment (default URL if blank)';
+$_['help_discount_type']   = 'Choose discount type: amount or percents';
+
+$_['help_discount_amount']       = 'Discount amount';
+$_['help_discount_amount_limit']       = 'Max discount amount for fixed discount, %';
+$_['help_discount_percentage']       = 'Discount amount in percents (%)';
 
 // Error
 $_['error_permission']				= 'You do not have permission to modify Coinsnap payment module';

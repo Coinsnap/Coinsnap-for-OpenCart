@@ -32,35 +32,34 @@
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 			</div>
 		{% endif %}
-		<div class="card">
-			<div class="card-header">
-				<i class="fa-solid fa-pencil"></i>
-				{{ text_edit }}
-        
-      </div>
-			<div class="card-body">
-				<form action="{{action}}" method="post" id="form-coinsnap" class="form-horizontal" data-oc-toggle="ajax">
-                                    
-                                    <div class="row mb-3">
-				<label class="col-sm-2 col-form-label" for="input-provider" >{{ entry_provider }}</label>
-				<div class="col-sm-10">
-                                    <select name="payment_coinsnap_provider" id="input-provider" class="form-select">
-					<option value="coinsnap" {% if 'coinsnap' == payment_coinsnap_provider %} selected="selected" {% endif %}>Coinsnap</option>
-                                        <option value="btcpay" {% if 'btcpay' == payment_coinsnap_provider %} selected="selected" {% endif %}>BTCPay server</option>
-                                    </select>
-				</div>
-			  </div>
+    <div class="card">
+        <div class="card-header">
+            <i class="fa-solid fa-pencil"></i>
+            {{ entry_settings_title }}
+        </div>
+        <div class="card-body">
+            <form action="{{action}}" method="post" id="form-coinsnap" class="form-horizontal" data-oc-toggle="ajax">
+                
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label" for="input-provider" >{{ entry_provider }}</label>
+                    <div class="col-sm-10">
+                        <select name="payment_coinsnap_provider" id="input-provider" class="form-select">
+                            <option value="coinsnap" {% if 'coinsnap' == payment_coinsnap_provider %} selected="selected" {% endif %}>Coinsnap</option>
+                            <option value="btcpay" {% if 'btcpay' == payment_coinsnap_provider %} selected="selected" {% endif %}>BTCPay server</option>
+                        </select>
+                    </div>
+		</div>
 
-			<div class="row mb-3 coinsnap">
-						<label class="col-sm-2 col-form-label" for="input-store-id">{{entry_store_id}}</label>
-						<div class="col-sm-10">
-				  			<input type="text" name="payment_coinsnap_store_id" value="{{payment_coinsnap_store_id}}" placeholder="{{help_store_id}}" id="input-store-id" class="form-control" />
-							<small class="form-text text-muted">required</small>
-				  			{% if error_store_id %}
-					  			<div class="text-danger">{{error_store_id}}</div>
-				  			{% endif %}
-						</div>
-			  		</div> 
+		<div class="row mb-3 coinsnap">
+                    <label class="col-sm-2 col-form-label" for="input-store-id">{{entry_store_id}}</label>
+                    <div class="col-sm-10">
+			<input type="text" name="payment_coinsnap_store_id" value="{{payment_coinsnap_store_id}}" placeholder="{{help_store_id}}" id="input-store-id" class="form-control" />
+			<small class="form-text text-muted">required</small>
+			{% if error_store_id %}
+			<div class="text-danger">{{error_store_id}}</div>
+			{% endif %}
+                    </div>
+		</div>
 
 					<div class="row mb-3 coinsnap">
 						<label class="col-sm-2 col-form-label" for="input-store-id">{{entry_api_key}}</label>						
@@ -105,7 +104,16 @@
 				  		{% endif %}
 						</div>                
 			  		</div>
+            </div>
+        </div><br/>
+                                                
+        <div class="card">
 
+                <div class="card-header">
+                    <i class="fa-solid fa-pencil"></i>
+                    {{ entry_status_title }}
+                </div>
+            <div class="card-body">    
                             <div class="row mb-3">
 				<label class="col-sm-2 col-form-label" for="input-new-status" >{{ entry_new_status }}</label>
 				<div class="col-sm-10">
@@ -149,7 +157,75 @@
 					</select>
 				</div>
                           </div>
+                                        
+                </div>
+        </div><br/>
+                                                
+        <div class="card">
 
+            <div class="card-header">
+                <i class="fa-solid fa-pencil"></i>
+                {{ entry_discount_title }}
+            </div>
+            
+            <div class="card-body">    
+                
+                <div class="row mb-3">
+                    <label for="input-autoredirect" class="col-sm-2 col-form-label">{{ entry_discount_enabled }}</label>
+                    <div class="col-sm-10">
+                        <div class="form-check form-switch form-switch-lg">
+                            <input type="hidden" name="payment_coinsnap_discount_enabled" value="0"/>
+                            <input type="checkbox" name="payment_coinsnap_discount_enabled" value="1" id="discount-enabled" class="form-check-input" {% if payment_coinsnap_discount_enabled %} checked {% endif %}/>
+			</div>
+                    </div>
+		</div>
+                
+                <div class="row mb-3 discount">
+                    <label class="col-sm-2 col-form-label" for="input-provider" >{{ entry_discount_type }}</label>
+                    <div class="col-sm-10">
+                        <select name="payment_coinsnap_discount_type" id="discount-type" class="form-select">
+                            <option value="fixed" {% if 'fixed' == payment_coinsnap_discount_type %} selected="selected" {% endif %}>{{ entry_discount_type_fixed }}</option>
+                            <option value="percentage" {% if 'percentage' == payment_coinsnap_discount_type %} selected="selected" {% endif %}>{{ entry_discount_type_percentage }}</option>
+                        </select>
+                        <small class="form-text text-muted">{{ help_discount_type }}</small>
+                    </div>
+		</div>
+                    
+                <div class="row mb-3 discount discount-amount">
+                    <label class="col-sm-2 col-form-label" for="input-store-id">{{entry_discount_amount}}</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="0.01" name="payment_coinsnap_discount_amount" value="{{payment_coinsnap_discount_amount}}" placeholder="" id="discount-amount" class="form-control" />
+			<small class="form-text text-muted">{{help_discount_amount}}</small>
+                    </div>
+		</div>
+                    
+                <div class="row mb-3 discount discount-amount">
+                    <label class="col-sm-2 col-form-label" for="input-store-id">{{entry_discount_amount_limit}}</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="0.01" max="100" name="payment_coinsnap_discount_amount_limit" value="{{payment_coinsnap_discount_amount_limit}}" placeholder="" id="discount-amount-limit" class="form-control" />
+			<small class="form-text text-muted">{{help_discount_amount_limit}}</small>
+                    </div>
+		</div>
+                    
+                <div class="row mb-3 discount discount-percentage">
+                    <label class="col-sm-2 col-form-label" for="input-store-id">{{entry_discount_percentage}}</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="0.01" max="100" name="payment_coinsnap_discount_percentage" value="{{payment_coinsnap_discount_percentage}}" placeholder="" id="discount-percentage" class="form-control" />
+			<small class="form-text text-muted">{{help_discount_percentage}}</small>
+                    </div>
+		</div>
+
+                    </div>
+        </div><br/>
+                                                
+        <div class="card">
+
+            <div class="card-header">
+                <i class="fa-solid fa-pencil"></i>
+                {{ entry_other_title }}
+            </div>
+            
+            <div class="card-body">    
                                         <div class="row mb-3">
 						<label for="input-autoredirect" class="col-sm-2 col-form-label">{{ entry_autoredirect }}</label>
 						<div class="col-sm-10">
@@ -166,6 +242,8 @@
 				  			<input type="text" name="payment_coinsnap_returnurl" value="{{payment_coinsnap_returnurl}}" placeholder="{{help_returnurl}}" id="input-store-id" class="form-control" />
 						</div>
 			  		</div>
+                                                
+                
 
 					<div class="row mb-3">
 						<label for="input-geo-zone" class="col-sm-2 col-form-label">{{ entry_geo_zone }}</label>

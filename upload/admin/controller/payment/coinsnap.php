@@ -152,8 +152,11 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['error_api_key'] = '';
 		}
 		
-		
-		
+		if (isset($this->request->post['payment_coinsnap_provider'])) {
+			$data['payment_coinsnap_provider'] = $this->request->post['payment_coinsnap_provider'];
+		} else {
+			$data['payment_coinsnap_provider'] = $this->config->get('payment_coinsnap_provider');
+		}
 		
 		if (isset($this->request->post['payment_coinsnap_store_id'])) {
 			$data['payment_coinsnap_store_id'] = $this->request->post['payment_coinsnap_store_id'];
@@ -191,7 +194,13 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['payment_coinsnap_returnurl'] = $this->config->get('payment_coinsnap_returnurl');
 		}
                 
-                if (isset($this->request->post['payment_coinsnap_discount_amount'])) {
+                if (isset($this->request->post['payment_coinsnap_discount_type'])) {
+			$data['payment_coinsnap_discount_type'] = $this->request->post['payment_coinsnap_discount_type'];
+		} else {
+			$data['payment_coinsnap_discount_type'] = $this->config->get('payment_coinsnap_discount_type');
+		}
+		
+		if (isset($this->request->post['payment_coinsnap_discount_amount'])) {
 			$data['payment_coinsnap_discount_amount'] = $this->request->post['payment_coinsnap_discount_amount'];
 		} else {
 			$data['payment_coinsnap_discount_amount'] = $this->config->get('payment_coinsnap_discount_amount');
@@ -467,25 +476,19 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
         
         $whClient = new \Coinsnap\Client\Webhook($apiUrl, $apiKey);
         $storedWebhook = json_decode($this->config->get('payment_coinsnap_webhook'),true);
-                
-        if ($storedWebhook && is_array($storedWebhook)) {
-
-            try {
-                $existingWebhook = $whClient->getWebhook($storeId, $storedWebhook['id']);
-
-                if ($existingWebhook->getData()['id'] === $storedWebhook['id'] && strpos($existingWebhook->getData()['url'], $storedWebhook['url']) !== false) {
-                    return true;
-                }
-            } catch (\Throwable $e) {
-                $errorMessage = 'Error fetching existing Webhook. Message: ' .$e->getMessage();
-                return false;
-            }
-        }
+        $isWebhook = false;
+        
         try {
             $storeWebhooks = $whClient->getWebhooks($storeId);
             foreach ($storeWebhooks as $webhook) {
                 if (strpos($webhook->getData()['url'], $this->getWebhookUrl()) !== false) {
-                    $whClient->deleteWebhook($storeId, $webhook->getData()['id']);
+                    
+                    if ($storedWebhook && is_array($storedWebhook) && $webhook->getData()['id'] === $storedWebhook['id']){
+                        $isWebhook = true;
+                    }
+                    else {
+                        $whClient->deleteWebhook($storeId, $webhook->getData()['id']);
+                    }
                 }
             }
         } catch (\Throwable $e) {
@@ -493,7 +496,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
             return false;
         }
 
-        return false;
+        return $isWebhook;
     }
 	
     public function registerWebhook(string $apiUrl, string $apiKey, string $storeId, string $provider){

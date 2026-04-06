@@ -2,7 +2,6 @@
 $(document).ready(function() {
     
     if($('#input-provider').length){
-        console.log('Provider 2');
         setProvider();
         $('#input-provider').change(function(){
             setProvider();
@@ -35,8 +34,8 @@ $(document).ready(function() {
             }
         });
         
-        $('.discount').keyup(function() {
-            $(this).val($(this).val().replace(/[^0-9,]/g,''));
+        $('.discount input').keyup(function() {
+            $(this).val($(this).val().replace(/[^0-9.]+/i,''));
         });
         
         if($('#discount-enabled').prop('checked')){
@@ -51,14 +50,12 @@ $(document).ready(function() {
     function setProvider(){
         
         if($('#input-provider').val() === 'btcpay'){
-            console.log('BTCPay');
             $('div.coinsnap').hide();
             $('div.coinsnap input[type=text]').removeAttr('required');
             $('div.btcpay').show();
             $('div.btcpay input[type=text]').attr('required','required');
         }
         else {
-            console.log('Coinsnap');
             $('div.btcpay').hide();
             $('div.btcpay input[type=text]').removeAttr('required');
             $('div.coinsnap').show();

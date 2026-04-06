@@ -7,7 +7,7 @@
 * Tags: Lightning, Lightning Payment, SATS, Satoshi sats, bitcoin, Opencart, payment gateway, accept bitcoin, bitcoin plugin, bitcoin payment processor, bitcoin e-commerce, Lightning Network, cryptocurrency, lightning payment processor
 * Requires PHP: 7.4
 * Requires Opencart: 4
-* Stable tag: 1.1.1
+* Stable tag: 1.2.0
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -180,3 +180,8 @@ Read more about the integration configuration on [our Wiki](https://github.com/C
 * Update: Added non-supported by BTCPay server currencies handler on invoice request flow.
 * Update: Added custom redirect after payment page in extension settings.
 * Update: Added autoredirect after payment checkbox in extension settings.
+
+#### 1.2.0 :: 2026-04-06
+* Update: Added Coinsnap Bitcoin discount on checkout (fixed amount or percentage).
+* Fixed: Stored payment gateway is added in payment gateways list.
+* Updated Coinsnap PHP library.

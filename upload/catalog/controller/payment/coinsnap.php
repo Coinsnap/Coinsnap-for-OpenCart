@@ -13,12 +13,38 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
 	
     public function index(){
         $this->load->model('checkout/order');
+        $this->load->model('setting/event');
         $this->language->load('extension/coinsnap/payment/coinsnap');
         $data['button_confirm'] = $this->language->get('button_confirm');		
         $action_url = $this->url->link('extension/coinsnap/payment/coinsnap.doPayment');
 	$data['action'] = $action_url;
         return $this->load->view('extension/coinsnap/payment/coinsnap', $data);
     }
+    
+/*    
+    
+    public function install() {
+        // registering events to show menu
+        $this->__registerEvents();
+    }
+    
+    protected function __registerEvents() {
+        $this->load->model('setting/event');
+        $this->model_setting_event->addEvent(
+            "BitcoinDiscount",
+            "catalog/model/checkout/total/total/getTotal/after",
+            "extension/coinsnap/catalog/controller/total/coinsnap|applyBitcoinDiscount"
+        );
+    }
+    
+    public function uninstall(){
+        $this->__unregisterEvents();
+    }
+    
+    protected function __unregisterEvents(){
+        $this->load->model('setting/event');
+	$this->model_setting_event->deleteEventByCode('BitcoinDiscount');
+    }*/
 
     public function webhook(){
 
@@ -242,11 +268,26 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
             $walletMessage = '';
 
             // Handle currencies non-supported by BTCPay Server, we need to change them BTC and adjust the amount.
-            if (($currency === 'SATS' || $currency === 'RUB') && $this->config->get('payment_coinsnap_provider') === 'btcpay') {
-                $currency = 'BTC';
-                $rate = 1/$checkInvoice['rate'];
-                $amountBTC = bcdiv(strval($amount), strval($rate), 8);
-                $amount = (float)$amountBTC;
+            if ($currency !== 'BTC' && $this->config->get('payment_coinsnap_provider') === 'btcpay') {
+                $store = new \Coinsnap\Client\Store($this->getApiUrl(), $this->getApiKey());
+                $btcpayCurrencies = $store -> getStoreCurrenciesRates($this->getStoreId(),array($currency));
+                $isCurrency = true;
+                if(!isset($btcpayCurrencies['result']['error']) && count($btcpayCurrencies['result']['currencies'])>0){
+                    if(!isset($btcpayCurrencies['result']['currencies']['BTC_'.$currency])){
+                        $isCurrency = false;
+                    }
+                }
+                else {
+                    $isCurrency = false;
+                }
+                    
+                // Handle currencies non-supported by BTCPay Server, we need to change them BTC and adjust the amount.
+                if( !$isCurrency ){
+                    $currency = 'BTC';
+                    $rate = 1/$checkInvoice['rate'];
+                    $amountBTC = bcdiv(strval($amount), strval($rate), 8);
+                    $amount = (float)$amountBTC;
+                }
             }
         
             $camount = ($currency === 'BTC')? \Coinsnap\Util\PreciseNumber::parseFloat($amount,8) : \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);

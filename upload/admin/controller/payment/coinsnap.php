@@ -65,6 +65,12 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['payment_coinsnap_autoredirect'] = $this->config->get('payment_coinsnap_autoredirect');
 		}
                 
+                if (isset($this->request->post['payment_coinsnap_discount_enabled'])) {
+			$data['payment_coinsnap_discount_enabled'] = $this->request->post['payment_coinsnap_discount_enabled'];
+		} else {
+			$data['payment_coinsnap_discount_enabled'] = $this->config->get('payment_coinsnap_discount_enabled');
+		}
+                
                 
 		$this->load->model('localisation/geo_zone');
 		$data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
@@ -90,6 +96,11 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 		/*
 		 * Coinsnap 
 		 */
+                $data['entry_settings_title'] = $this->language->get('entry_settings_title');
+                $data['entry_status_title'] = $this->language->get('entry_status_title');
+                $data['entry_discount_title'] = $this->language->get('entry_discount_title');
+                $data['entry_other_title'] = $this->language->get('entry_other_title');
+                
 		$data['entry_store_id']	= $this->language->get('entry_store_id');		
 		$data['entry_api_key']	= $this->language->get('entry_api_key');
                 
@@ -104,6 +115,15 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
                 
                 $data['entry_autoredirect']     = $this->language->get('entry_autoredirect');
 		$data['entry_returnurl']        = $this->language->get('entry_returnurl');
+                
+                $data['entry_discount_enabled']         = $this->language->get('entry_discount_enabled');
+		$data['entry_discount_type']            = $this->language->get('entry_discount_type');
+		$data['entry_discount_type_fixed']      = $this->language->get('entry_discount_type_fixed');
+		$data['entry_discount_type_percentage'] = $this->language->get('entry_discount_type_percentage');
+                
+                $data['entry_discount_amount']          = $this->language->get('entry_discount_amount');
+                $data['entry_discount_amount_limit']    = $this->language->get('entry_discount_amount_limit');
+                $data['entry_discount_percentage']      = $this->language->get('entry_discount_percentage');
 		
 		$data['help_store_id']		= $this->language->get('help_store_id');		
 		$data['help_api_key']		= $this->language->get('help_api_key');	
@@ -112,7 +132,12 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
                 $data['help_btcpay_store_id']  	= $this->language->get('help_btcpay_store_id');
                 $data['help_btcpay_api_key']   	= $this->language->get('help_btcpay_api_key');
 
-                $data['help_returnurl']   = $this->language->get('help_returnurl');
+                $data['help_returnurl']   =     $this->language->get('help_returnurl');
+		$data['help_discount_type'] =   $this->language->get('help_discount_type');
+                
+                $data['help_discount_amount']       = $this->language->get('help_discount_amount');
+                $data['help_discount_amount_limit']       = $this->language->get('help_discount_amount_limit');
+                $data['help_discount_percentage']       = $this->language->get('help_discount_percentage');
 		
 		//errors
 		
@@ -127,8 +152,11 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['error_api_key'] = '';
 		}
 		
-		
-		
+		if (isset($this->request->post['payment_coinsnap_provider'])) {
+			$data['payment_coinsnap_provider'] = $this->request->post['payment_coinsnap_provider'];
+		} else {
+			$data['payment_coinsnap_provider'] = $this->config->get('payment_coinsnap_provider');
+		}
 		
 		if (isset($this->request->post['payment_coinsnap_store_id'])) {
 			$data['payment_coinsnap_store_id'] = $this->request->post['payment_coinsnap_store_id'];
@@ -164,6 +192,30 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['payment_coinsnap_returnurl'] = $this->request->post['payment_coinsnap_returnurl'];
 		} else {
 			$data['payment_coinsnap_returnurl'] = $this->config->get('payment_coinsnap_returnurl');
+		}
+                
+                if (isset($this->request->post['payment_coinsnap_discount_type'])) {
+			$data['payment_coinsnap_discount_type'] = $this->request->post['payment_coinsnap_discount_type'];
+		} else {
+			$data['payment_coinsnap_discount_type'] = $this->config->get('payment_coinsnap_discount_type');
+		}
+		
+		if (isset($this->request->post['payment_coinsnap_discount_amount'])) {
+			$data['payment_coinsnap_discount_amount'] = $this->request->post['payment_coinsnap_discount_amount'];
+		} else {
+			$data['payment_coinsnap_discount_amount'] = $this->config->get('payment_coinsnap_discount_amount');
+		}
+                
+                if (isset($this->request->post['payment_coinsnap_discount_amount_limit'])) {
+			$data['payment_coinsnap_discount_amount_limit'] = $this->request->post['payment_coinsnap_discount_amount_limit'];
+		} else {
+			$data['payment_coinsnap_discount_amount_limit'] = $this->config->get('payment_coinsnap_discount_amount_limit');
+		}
+                
+                if (isset($this->request->post['payment_coinsnap_discount_percentage'])) {
+			$data['payment_coinsnap_discount_percentage'] = $this->request->post['payment_coinsnap_discount_percentage'];
+		} else {
+			$data['payment_coinsnap_discount_percentage'] = $this->config->get('payment_coinsnap_discount_percentage');
 		}
 		
 
@@ -202,6 +254,12 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 		} else {
 			$method_name = $this->config->get('payment_coinsnap_method_name'); 			
 			$data['payment_coinsnap_method_name'] = (!empty($method_name)) ? $method_name : 'Bitcoin + Lightning';
+		}
+                
+                if (isset($this->request->post['payment_coinsnap_discount_type'])) {
+                    $data['payment_coinsnap_discount_type'] = $this->request->post['payment_coinsnap_discount_type'];
+		} else {
+                    $method_name = $this->config->get('payment_coinsnap_method_name');
 		}
 		
 
@@ -418,25 +476,19 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
         
         $whClient = new \Coinsnap\Client\Webhook($apiUrl, $apiKey);
         $storedWebhook = json_decode($this->config->get('payment_coinsnap_webhook'),true);
-                
-        if ($storedWebhook && is_array($storedWebhook)) {
-
-            try {
-                $existingWebhook = $whClient->getWebhook($storeId, $storedWebhook['id']);
-
-                if ($existingWebhook->getData()['id'] === $storedWebhook['id'] && strpos($existingWebhook->getData()['url'], $storedWebhook['url']) !== false) {
-                    return true;
-                }
-            } catch (\Throwable $e) {
-                $errorMessage = 'Error fetching existing Webhook. Message: ' .$e->getMessage();
-                return false;
-            }
-        }
+        $isWebhook = false;
+        
         try {
             $storeWebhooks = $whClient->getWebhooks($storeId);
             foreach ($storeWebhooks as $webhook) {
                 if (strpos($webhook->getData()['url'], $this->getWebhookUrl()) !== false) {
-                    $whClient->deleteWebhook($storeId, $webhook->getData()['id']);
+                    
+                    if ($storedWebhook && is_array($storedWebhook) && $webhook->getData()['id'] === $storedWebhook['id']){
+                        $isWebhook = true;
+                    }
+                    else {
+                        $whClient->deleteWebhook($storeId, $webhook->getData()['id']);
+                    }
                 }
             }
         } catch (\Throwable $e) {
@@ -444,7 +496,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
             return false;
         }
 
-        return false;
+        return $isWebhook;
     }
 	
     public function registerWebhook(string $apiUrl, string $apiKey, string $storeId, string $provider){

@@ -190,7 +190,7 @@ Now Bitcoin discount will be available on checkout after Bitcoin and Lightning p
 
 ### 2.1. Register in Coinsnap App ###
 
-Now go to the Coinsnap App at: [https://app.coinsnap.io/register](https://app.coinsnap.io/register) and open an account by entering your email address.
+Now go to the Coinsnap App at: [https://app.coinsnap.io/login](https://app.coinsnap.io/login) and open an account by entering your email address.
 
 ![Coinsnap login or registration](https://resources.coinsnap.org/products/opencart/images/screenshot-8.jpg)
 

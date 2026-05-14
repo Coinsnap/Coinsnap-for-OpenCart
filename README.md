@@ -190,29 +190,35 @@ Now Bitcoin discount will be available on checkout after Bitcoin and Lightning p
 
 ### 2.1. Register in Coinsnap App ###
 
-Now go to the Coinsnap website at: [https://app.coinsnap.io/](https://app.coinsnap.io/) and open an account by entering your email address and a password of your choice.
+Now go to the Coinsnap App at: [https://app.coinsnap.io/register](https://app.coinsnap.io/register) and open an account by entering your email address.
 
-![Coinsnap registration](https://resources.coinsnap.org/products/opencart/images/screenshot-8.jpg)
+![Coinsnap login or registration](https://resources.coinsnap.org/products/opencart/images/screenshot-8.jpg)
 
-If you are using a Lightning Wallet with Lightning Login, then you can also open a Coinsnap account with it.
+On the [Coinsnap website](https://coinsnap.io), click **Sign In** in the main menu at the top of the page.
 
 ### 2.2. Confirm email address ###
 
-You will receive an email to the given email address with a confirmation link, which you have to confirm. If you do not find the email, please check your spam folder.
+Check your inbox for the OTP-code sent by Coinsnap. Enter the code in the sign-in form, then click Sign in. If you do not find the email, please check your spam folder.
 
-![E-mail address confirmation](https://resources.coinsnap.org/products/magento/images/screenshot-18.png)
+![One time password field](https://resources.coinsnap.org/products/magento/images/screenshot-19.png)
 
-Then please log in to the Coinsnap backend with the appropriate credentials.
+Your account is now active.
 
 ### 2.3. Set up website at Coinsnap ###
 
-After you sign up, you will be asked to provide two pieces of information.
+After entering the code, you will be redirected to your account dashboard. It prompts you to connect your shop and wallet to activate Bitcoin payments.
 
 ![Website settings](https://resources.coinsnap.org/products/opencart/images/screenshot-9.png)
 
-In the Website Name field, enter the name of your online store that you want customers to see when they check out.
+Enter your store name (this will be shown to your customers at checkout).
 
-In the Lightning Address field, enter the Lightning address to which the Bitcoin and Lightning transactions should be forwarded.
+Enter your Lightning address(e.g. yourname@wallet.com) to receive Bitcoin payments.
+
+(Optional) Enter your xPub key if you want to receive on-chain Bitcoin payments directly to your wallet.
+
+(Optional) Enter a referral code if you have one.
+
+Click Connect store to complete the setup.
 
 A Lightning address is similar to an e-mail address. Lightning payments are forwarded to this Lightning address and paid out. If you don’t have a Lightning address yet, set up a Lightning wallet that will provide you with a Lightning address.
 

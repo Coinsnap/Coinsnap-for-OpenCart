@@ -200,7 +200,7 @@ On the [Coinsnap website](https://coinsnap.io), click **Sign In** in the main me
 
 Check your inbox for the OTP-code sent by Coinsnap. Enter the code in the sign-in form, then click Sign in. If you do not find the email, please check your spam folder.
 
-![One time password field](https://resources.coinsnap.org/products/magento/images/screenshot-19.png)
+![One time password field](https://resources.coinsnap.org/products/opencart/images/screenshot-19.png)
 
 Your account is now active.
 

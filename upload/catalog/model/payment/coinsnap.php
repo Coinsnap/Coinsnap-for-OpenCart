@@ -71,6 +71,12 @@ class Coinsnap extends \Opencart\System\Engine\Model {
 		return (bool)$this->db->query("SELECT 1 FROM `" . DB_PREFIX . "coinsnap_invoice` WHERE `order_id` = " . (int)$orderId . " LIMIT 1")->num_rows;
 	}
 
+	// Whether any invoice has already paid this order.
+	public function orderIsPaid(int $orderId): bool {
+		$this->ensureInvoiceTable();
+		return (bool)$this->db->query("SELECT 1 FROM `" . DB_PREFIX . "coinsnap_invoice` WHERE `order_id` = " . (int)$orderId . " AND `paid_at` IS NOT NULL LIMIT 1")->num_rows;
+	}
+
 	// True for the first caller only, so two webhooks for one invoice can't both mark the order paid.
 	public function claimPaid(string $invoiceId, int $orderId, string $amount, string $currency): bool {
 		$this->ensureInvoiceTable();

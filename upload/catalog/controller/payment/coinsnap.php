@@ -133,7 +133,8 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
             return null;
         }
         // Orders placed before 1.3.0 have no record; check against what was sent then.
-        return ['amount' => number_format(round((float) $order['total'], 2), 2, '.', ''), 'currency' => (string) $order['currency_code']];
+        $total = (float) $order['total'] * (float) ($order['currency_value'] ?: 1);
+        return ['amount' => number_format(round($total, 2), 2, '.', ''), 'currency' => (string) $order['currency_code']];
     }
 
     // Moves an order forward only: an order that left the awaiting statuses never changes from a webhook.
@@ -156,6 +157,11 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
             }
             $this->update_payment($orderId, $invoiceId, $this->config->get('payment_coinsnap_settled_status'));
             $this->logInfo('paid', $invoiceId);
+            return;
+        }
+        // Statuses can share ids (processing and paid both default to 2), so "paid" comes from the invoice record.
+        if ($this->model_extension_coinsnap_payment_coinsnap->orderIsPaid($orderId)) {
+            $this->logInfo('no change: order already paid', $invoiceId);
             return;
         }
         if ($decision === InvoiceDecision::PROCESSING && in_array($status, [0, $new], true) && $status !== $processing) {

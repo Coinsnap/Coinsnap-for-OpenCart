@@ -32,9 +32,8 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
         $this->load->model('checkout/order');
         $this->load->model('extension/coinsnap/payment/coinsnap');
 
-        $rawPostData = (string) file_get_contents('php://input');
-        $webhook = json_decode((string) $this->config->get('payment_coinsnap_webhook'), true);
-        $secret = is_array($webhook) ? (string) ($webhook['secret'] ?? '') : '';
+        $rawPostData = $this->rawBody();
+        $secret = $this->webhookSecret();
 
         $problem = ($this->getProvider() === 'btcpay')
             ? Signature::btcpayProblem($this->requestHeader('BTCPay-Sig'), $rawPostData, $secret)
@@ -96,9 +95,28 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
         $this->reply(200, 'OK');
     }
 
+    // The secret of the webhook registered for the configured provider and store; '' rejects every webhook.
+    private function webhookSecret(): string {
+        $webhook = json_decode((string) $this->config->get('payment_coinsnap_webhook'), true);
+        if (!is_array($webhook) || !is_string($webhook['secret'] ?? null)) {
+            return '';
+        }
+        // Webhooks saved before 1.3.0 carry no provider or store; they keep working until the settings are saved again.
+        if (isset($webhook['provider']) || isset($webhook['store_id'])) {
+            if (($webhook['provider'] ?? '') !== $this->getProvider() || (string) ($webhook['store_id'] ?? '') !== (string) $this->getStoreId()) {
+                return '';
+            }
+        }
+        return $webhook['secret'];
+    }
+
     private function requestHeader(string $name): string {
         $key = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
         return isset($this->request->server[$key]) ? (string) $this->request->server[$key] : '';
+    }
+
+    protected function rawBody(): string {
+        return (string) file_get_contents('php://input');
     }
 
     protected function reply(int $status, string $message): void {
@@ -132,7 +150,11 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
         if ($model->orderHasInvoices((int) $order['order_id'])) {
             return null;
         }
-        // Orders placed before 1.3.0 have no record; check against what was sent then.
+        // Orders placed before 1.3.0 have no record. They are accepted for one day after the upgrade, when every
+        // invoice opened before it has expired, and checked against what was sent then.
+        if (!$model->isLegacyOrder((int) $order['order_id'])) {
+            return null;
+        }
         $total = (float) $order['total'] * (float) ($order['currency_value'] ?: 1);
         return ['amount' => number_format(round($total, 2), 2, '.', ''), 'currency' => (string) $order['currency_code']];
     }
@@ -164,12 +186,19 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
             $this->logInfo('no change: order already paid', $invoiceId);
             return;
         }
+        // A status the merchant set by hand is kept; only a real payment (above) may change it.
+        if ($status !== 0 && !$this->model_extension_coinsnap_payment_coinsnap->statusSetByExtension($orderId, $status)) {
+            $this->logInfo('no change: status set by hand', $invoiceId);
+            return;
+        }
+        // Processing means the payment was seen: this places an order that was not placed yet.
         if ($decision === InvoiceDecision::PROCESSING && in_array($status, [0, $new], true) && $status !== $processing) {
             $this->update_payment($orderId, $invoiceId, $processing);
             $this->logInfo('status processing', $invoiceId);
             return;
         }
-        if ($decision === InvoiceDecision::EXPIRED && in_array($status, [0, $new, $processing], true)) {
+        // An unpaid order that was never placed stays unplaced.
+        if ($decision === InvoiceDecision::EXPIRED && in_array($status, [$new, $processing], true)) {
             $this->update_payment($orderId, $invoiceId, $expired);
             $this->logInfo('status expired', $invoiceId);
             return;
@@ -198,10 +227,6 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
         // The invoice id comes from the request.
         $id = substr((string) preg_replace('/[^A-Za-z0-9_-]/', '', $invoiceId), 0, 64);
         return sprintf('Coinsnap %s webhook reason=%s invoice=%s', $level, $reason, $id !== '' ? $id : '-');
-    }
-
-    public function getWebhookUrl(){
-        return $webhook_url = HTTP_CATALOG . 'index.php?route=extension/coinsnap/payment/coinsnap.webhook';
     }
 
     public function getProvider() {
@@ -295,8 +320,13 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
         $this->load->model('checkout/order');
         $this->load->model('extension/coinsnap/payment/coinsnap');
 
-        $order_id = $this->session->data['order_id'];
-        $order_info = $this->model_checkout_order->getOrder($order_id);
+        $order_id = (int) ($this->session->data['order_id'] ?? 0);
+        $order_info = $order_id > 0 ? $this->model_checkout_order->getOrder($order_id) : [];
+        $code = is_array($order_info['payment_method'] ?? null) ? ($order_info['payment_method']['code'] ?? '') : ($order_info['payment_code'] ?? '');
+        if (empty($order_info['order_id']) || strpos((string) $code, 'coinsnap') !== 0) {
+            $this->response->setOutput('The payment could not be started. Please try again later.');
+            return;
+        }
 
         // The order total is stored in the default currency; convert it to the currency the customer pays in.
         $amount = round((float) $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false), 2);
@@ -315,8 +345,8 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
                 $errorMessage = 'The payment provider cannot be reached. Please try again later.';
             }
             $this->log->write('Coinsnap: payment not started for order '.(int) $order_id.': '.$errorMessage);
-            echo $errorMessage;
-            exit;
+            $this->response->setOutput($errorMessage);
+            return;
         }
 
         $redirectUrl = (!empty($this->config->get('payment_coinsnap_returnurl')))? $this->config->get('payment_coinsnap_returnurl') : HTTP_SERVER.'index.php?route=checkout/success';
@@ -348,7 +378,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
                 $this->getStoreId(),
                 $currency,
                 $camount,
-                $order_id,
+                (string) $order_id,
                 $buyerEmail,
                 $buyerName,
                 $redirectUrl,
@@ -363,13 +393,14 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
         }
 
         if (empty($invoiceData['checkoutLink']) || empty($invoiceData['id'])) {
-            echo 'The payment could not be started. Please try again later.';
-            exit;
+            $this->response->setOutput('The payment could not be started. Please try again later.');
+            return;
         }
 
         // Only this invoice, for this amount and currency, can pay the order.
         $this->model_extension_coinsnap_payment_coinsnap->rememberInvoice((string) $invoiceData['id'], (int) $order_id, $camount->__toString(), $currency);
-        $this->model_checkout_order->addHistory($order_id, $this->config->get('payment_coinsnap_new_status'), 'New');
+        // The order is not placed here: OpenCart counts Pending as a processing status (stock, coupons, mails).
+        // The webhook places it once the API reports the invoice as Processing or Settled.
         $this->clearCart();
         $this->sessionClear();
         $this->response->redirect($invoiceData['checkoutLink']);

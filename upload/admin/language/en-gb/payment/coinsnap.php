@@ -50,6 +50,8 @@ $_['entry_new_status']     = 'New Status';
 $_['entry_expired_status']     = 'Expired Status';
 $_['entry_settled_status']     = 'Settled Status';
 $_['entry_processing_status']     = 'Processing Status';
+$_['error_btcpay_server_url'] = 'Enter the BTCPay server URL, starting with https://';
+$_['error_btcpay_api_key_scope'] = 'The BTCPay API key was refused. Create a key limited to this store, with only the store permissions this extension needs (create and view invoices, view store settings, modify webhooks).';
 $_['error_webhook']     = 'Unable to register Webhook URL, check Store ID and API Key';
 $_['coinsnap_logo']        = '<a href="http://coinsnap.io" target="_blank"><img src="../extension/coinsnap/admin/view/image/logo.png" alt="coinsnap" title="coinsnap"  /></a>';
 $_['coinsnap_description']  = 'Coinsnap - Bitcoin + Lightning Payments';

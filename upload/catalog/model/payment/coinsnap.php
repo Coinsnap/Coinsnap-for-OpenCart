@@ -40,8 +40,17 @@ class Coinsnap extends \Opencart\System\Engine\Model {
 		return $method_data;
 	}
 
+	private const RECORDS_SINCE_CODE = 'coinsnap_invoice_records';
+	private const RECORDS_SINCE_KEY = 'coinsnap_invoice_records_since';
+
+	private static bool $tableReady = false;
+
 	// Invoices this extension created: the order each pays for, the amount and currency sent, and whether it was applied.
+	// When the table is first created, the time is saved: orders from before it have no records (see isLegacyOrder()).
 	public function ensureInvoiceTable(): void {
+		if (self::$tableReady) {
+			return;
+		}
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "coinsnap_invoice` (
 			`invoice_id` VARCHAR(64) NOT NULL,
 			`order_id` INT UNSIGNED NOT NULL,
@@ -51,6 +60,34 @@ class Coinsnap extends \Opencart\System\Engine\Model {
 			PRIMARY KEY (`invoice_id`),
 			KEY `order_id` (`order_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+		// Own setting code, so saving the payment settings (which rewrites every payment_coinsnap key) keeps it.
+		$this->db->query("INSERT INTO `" . DB_PREFIX . "setting` (`store_id`, `code`, `key`, `value`, `serialized`)
+			SELECT 0, '" . self::RECORDS_SINCE_CODE . "', '" . self::RECORDS_SINCE_KEY . "', NOW(), 0 FROM DUAL
+			WHERE NOT EXISTS (SELECT 1 FROM `" . DB_PREFIX . "setting` WHERE `store_id` = 0 AND `key` = '" . self::RECORDS_SINCE_KEY . "')");
+		self::$tableReady = true;
+	}
+
+	// An order placed before this version kept invoice records, while the one-day window after the upgrade is open.
+	public function isLegacyOrder(int $orderId): bool {
+		$this->ensureInvoiceTable();
+		$query = $this->db->query("SELECT 1 FROM `" . DB_PREFIX . "order` o
+			JOIN `" . DB_PREFIX . "setting` s ON s.`store_id` = 0 AND s.`key` = '" . self::RECORDS_SINCE_KEY . "'
+			WHERE o.`order_id` = " . (int)$orderId . "
+			AND o.`date_added` < s.`value`
+			AND NOW() < DATE_ADD(s.`value`, INTERVAL 1 DAY)");
+		return (bool)$query->num_rows;
+	}
+
+	// Whether the order's current status came from this extension (its newest history entry is ours).
+	// Anything else was set by the merchant and is not changed by Processing or Expired webhooks.
+	public function statusSetByExtension(int $orderId, int $statusId): bool {
+		$query = $this->db->query("SELECT `order_status_id`, `comment` FROM `" . DB_PREFIX . "order_history` WHERE `order_id` = " . (int)$orderId . " ORDER BY `order_history_id` DESC LIMIT 1");
+		if (!$query->num_rows || (int)$query->row['order_status_id'] !== $statusId) {
+			return false;
+		}
+		$comment = (string)$query->row['comment'];
+		// 'New' is what versions before 1.3.0 wrote when the invoice was created.
+		return $comment === 'New' || strpos($comment, 'Coinsnap Invoice ID: ') === 0;
 	}
 
 	public function rememberInvoice(string $invoiceId, int $orderId, string $amount, string $currency): void {

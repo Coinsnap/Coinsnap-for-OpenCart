@@ -62,22 +62,14 @@ class Discount extends \Opencart\System\Engine\Controller {
         $this->load->language('extension/coinsnap/total/discount');
         $json = [];
         
-        if ($this->request->server['REQUEST_METHOD'] == 'POST'){
-            
-        }
-
+        // Permission first: nothing is saved without it.
         if (!$this->user->hasPermission('modify', 'extension/coinsnap/total/discount')) {
             $json['error'] = $this->language->get('error_permission');
+        } else {
+            $this->load->model('setting/setting');
+            $this->model_setting_setting->editSetting('total_discount', $this->request->post);
+            $json['success'] = $this->language->get('text_success');
         }
-
-        //if (!isset($json['error'])) {
-			// Setting
-			$this->load->model('setting/setting');
-
-			$this->model_setting_setting->editSetting('total_discount', $this->request->post);
-
-			$json['success'] = $this->language->get('text_success') . json_encode($this->request->post);
-		//}
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));

@@ -162,6 +162,23 @@ Use the support area in your Coinsnap merchant account or join the official [Coi
 
 ## Changelog
 
+### 1.3.0
+
+- Security: Webhooks are verified with the timestamped `X-Coinsnap-Signature` header (Coinsnap) or `BTCPay-Sig` (BTCPay Server), with a timing-safe comparison. A missing webhook secret rejects every webhook.
+- Security: An order changes only for an invoice this extension created for it, and is marked paid only when the invoice is settled for the amount and currency the extension asked for. Before, any invoice in the same Coinsnap store with a matching order ID could change an order's status, including moving a paid order back.
+- Security: Each invoice marks an order paid once, and paid, shipped or refunded orders are no longer changed by a webhook. BTCPay invoices marked settled by hand are not accepted.
+- Security: Webhook bodies, customer names and API errors are no longer written to the OpenCart log. Rejected webhooks are logged with a fixed reason.
+- Security: API keys are no longer shown in the admin, and a failed webhook registration no longer prints the stored webhook secret. Leave a key field empty to keep the stored key; a changed BTCPay Server URL needs the key entered again.
+- Security: Starting a payment no longer places the order. OpenCart counts Pending as a processing status (stock is subtracted, coupons are redeemed, confirmation mails go out), so every unpaid checkout used to look like a placed order. The order is placed when the payment server reports the invoice as Processing or Settled; until then it is listed under Missing Orders.
+- Security: Processing and Expired webhooks no longer change a status the merchant set by hand. An Expired invoice no longer places an unplaced order.
+- Security: Orders from before 1.3.0, which have no invoice record, are accepted for one day after the upgrade only.
+- Security: The webhook secret is stored with its provider and store; a secret registered for another store or provider is not used. Saving the settings once after the upgrade replaces the webhook and its secret.
+- Security: A pasted BTCPay API key is saved only if BTCPay reports that all its permissions are store permissions for the configured store. Unrestricted keys and keys for all stores are refused.
+- Security: Saving the Coinsnap discount total requires the modify permission (the check was ignored).
+- Fix: Orders in a currency other than the store's default were invoiced with the default-currency amount.
+- Fix: A payment server outage while saving the settings no longer replaces the webhook.
+- Fix: The geo zone setting was ignored (catalog and admin form now use the same key).
+
 ### 1.2.0 — 2026-04-06
 
 - Added Coinsnap Bitcoin discount on checkout with fixed-amount or percentage options.

@@ -164,11 +164,8 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['payment_coinsnap_store_id'] = $this->config->get('payment_coinsnap_store_id');
 		}
 		
-		if (isset($this->request->post['payment_coinsnap_api_key'])) {
-			$data['payment_coinsnap_api_key'] = $this->request->post['payment_coinsnap_api_key'];
-		} else {
-			$data['payment_coinsnap_api_key'] = $this->config->get('payment_coinsnap_api_key');
-		}
+		// Only a hint of the stored key reaches the page, never the key.
+		$data['payment_coinsnap_api_key_hint'] = $this->secretHint((string)$this->config->get('payment_coinsnap_api_key'));
                 
                 if (isset($this->request->post['payment_coinsnap_btcpay_server_url'])) {
 			$data['payment_coinsnap_btcpay_server_url'] = $this->request->post['payment_coinsnap_btcpay_server_url'];
@@ -182,11 +179,8 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
 			$data['payment_coinsnap_btcpay_store_id'] = $this->config->get('payment_coinsnap_btcpay_store_id');
 		}
 		
-		if (isset($this->request->post['payment_coinsnap_btcpay_api_key'])) {
-			$data['payment_coinsnap_btcpay_api_key'] = $this->request->post['payment_coinsnap_btcpay_api_key'];
-		} else {
-			$data['payment_coinsnap_btcpay_api_key'] = $this->config->get('payment_coinsnap_btcpay_api_key');
-		}
+		// Only a hint of the stored key reaches the page, never the key.
+		$data['payment_coinsnap_btcpay_api_key_hint'] = $this->secretHint((string)$this->config->get('payment_coinsnap_btcpay_api_key'));
                 
                 if (isset($this->request->post['payment_coinsnap_returnurl'])) {
 			$data['payment_coinsnap_returnurl'] = $this->request->post['payment_coinsnap_returnurl'];
@@ -317,7 +311,9 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
         $this->load->language('extension/coinsnap/payment/coinsnap');
 	$json = [];
 		
-	if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {			
+	$this->load->model('setting/setting');
+	$this->keepStoredApiKeys();
+	if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate() && $this->btcpayKeyAccepted()) {			
 			
             if($this->model_setting_setting->getValue('payment_coinsnap_webhook') !== null){
                 $this->request->post['payment_coinsnap_webhook'] = $this->model_setting_setting->getValue('payment_coinsnap_webhook');
@@ -333,15 +329,22 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
             $store_id = ($provider === 'btcpay')? $this->request->post['payment_coinsnap_btcpay_store_id'] : $this->request->post['payment_coinsnap_store_id'];			
             $api_key =  ($provider === 'btcpay')? $this->request->post['payment_coinsnap_btcpay_api_key'] : $this->request->post['payment_coinsnap_api_key'];
                     
-            if (! $this->webhookExists($api_url, $api_key, $store_id)){
+            try {
+                $webhookExists = $this->webhookExists($api_url, $api_key, $store_id, $provider);
+            } catch (\Throwable $e) {
+                // An API error is not "no webhook": registering now would replace a working secret.
+                $webhookExists = null;
+                $json['error'] = $this->language->get('error_webhook');
+            }
+            if ($webhookExists === false) {
                 if (! $this->registerWebhook($api_url, $api_key, $store_id, $provider)) {
-                    $json['error'] = $this->language->get('error_webhook');										
+                    $json['error'] = $this->language->get('error_webhook');
                 }
                 else {
                     $json['info'] = 'Webhook is successfully registered';
                 }
             }
-            else {
+            elseif ($webhookExists === true) {
                 $json['info'] = 'Webhook exists';
             }
             
@@ -384,7 +387,7 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
             $json['success'] = $this->language->get('text_success') . ' '. $connectionData;			
         }
         else {							
-            $json['error'] = $this->error['warning'] . ' '. $connectionData;
+            $json['error'] = $this->error['warning'] ?? '';
         }
 
         $this->response->addHeader('Content-Type: application/json');
@@ -472,28 +475,31 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
         return ($this->getProvider() === 'btcpay')? $this->config->get('payment_coinsnap_btcpay_api_key') : $this->config->get('payment_coinsnap_api_key');
     }
 
-    public function webhookExists(string $apiUrl, string $apiKey, string $storeId): bool{
+    public function webhookExists(string $apiUrl, string $apiKey, string $storeId, string $provider): bool{
         
         $whClient = new \Coinsnap\Client\Webhook($apiUrl, $apiKey);
-        $storedWebhook = json_decode($this->config->get('payment_coinsnap_webhook'),true);
+        $storedWebhook = json_decode((string)$this->model_setting_setting->getValue('payment_coinsnap_webhook'),true);
+        // The stored secret belongs to one provider and store. One saved before 1.3.0 (no provider) is replaced,
+        // so the secret rotates once after the upgrade.
+        if (!is_array($storedWebhook) || ($storedWebhook['provider'] ?? '') !== $provider || (string)($storedWebhook['store_id'] ?? '') !== $storeId) {
+            $storedWebhook = null;
+        }
         $isWebhook = false;
-        
-        try {
-            $storeWebhooks = $whClient->getWebhooks($storeId);
-            foreach ($storeWebhooks as $webhook) {
-                if (strpos($webhook->getData()['url'], $this->getWebhookUrl()) !== false) {
-                    
-                    if ($storedWebhook && is_array($storedWebhook) && $webhook->getData()['id'] === $storedWebhook['id']){
-                        $isWebhook = true;
-                    }
-                    else {
-                        $whClient->deleteWebhook($storeId, $webhook->getData()['id']);
-                    }
-                }
+
+        // Throws when the API can't be asked; the caller must not treat that as "no webhook".
+        foreach ($whClient->getWebhooks($storeId) as $webhook) {
+            if (strpos($webhook->getData()['url'], $this->getWebhookUrl()) === false) {
+                continue;
             }
-        } catch (\Throwable $e) {
-            $errorMessage = 'Error fetching webhooks for store ID '.$storeId.'. Message: ' .$e->getMessage();
-            return false;
+            if ($storedWebhook && is_array($storedWebhook) && $webhook->getData()['id'] === $storedWebhook['id']){
+                $isWebhook = true;
+                continue;
+            }
+            try {
+                $whClient->deleteWebhook($storeId, $webhook->getData()['id']);
+            } catch (\Throwable $e) {
+                $this->log->write('Coinsnap: stale webhook could not be deleted');
+            }
         }
 
         return $isWebhook;
@@ -515,7 +521,9 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
             $webhook_data = [
                     'id' => $webhook->getData()['id'],
                     'secret' => $webhook->getData()['secret'],
-                    'url' => $webhook->getData()['url']
+                    'url' => $webhook->getData()['url'],
+                    'provider' => $provider,
+                    'store_id' => $storeId
             ];
             
             
@@ -524,9 +532,79 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
             return $webhook;
 
         } catch (\Throwable $e) {
-            $errorMessage = 'Error creating a new webhook for StoreID '.$storeId.' on Coinsnap instance: ' . $this->config->get('payment_coinsnap_webhook').' - '. $e->getMessage();
-            echo $errorMessage;
+            // No echo and no stored webhook in the message: it holds the secret.
+            $this->log->write('Coinsnap: webhook could not be registered (status '.(int)$e->getCode().')');
             return false;
         }
+    }
+
+    // Empty key fields keep the stored keys; a changed BTCPay URL never gets the stored BTCPay key.
+    private function keepStoredApiKeys(): void {
+        $post =& $this->request->post;
+        if (($post['payment_coinsnap_api_key'] ?? '') === '') {
+            $post['payment_coinsnap_api_key'] = (string)$this->config->get('payment_coinsnap_api_key');
+        }
+        $btcpayUrlUnchanged = (string)($post['payment_coinsnap_btcpay_server_url'] ?? '') === (string)$this->config->get('payment_coinsnap_btcpay_server_url');
+        if (($post['payment_coinsnap_btcpay_api_key'] ?? '') === '' && $btcpayUrlUnchanged) {
+            $post['payment_coinsnap_btcpay_api_key'] = (string)$this->config->get('payment_coinsnap_btcpay_api_key');
+        }
+    }
+
+    // A BTCPay key is saved only if BTCPay says every permission it has is a store permission for the configured
+    // store: an unrestricted key controls the merchant's whole server. Checked when the key, URL or store changes.
+    private function btcpayKeyAccepted(): bool {
+        $post = $this->request->post;
+        if (($post['payment_coinsnap_provider'] ?? '') !== 'btcpay') {
+            return true;
+        }
+        $url = rtrim((string)($post['payment_coinsnap_btcpay_server_url'] ?? ''), '/');
+        $storeId = (string)($post['payment_coinsnap_btcpay_store_id'] ?? '');
+        $apiKey = (string)($post['payment_coinsnap_btcpay_api_key'] ?? '');
+        $scheme = strtolower((string)parse_url($url, PHP_URL_SCHEME));
+        if (!in_array($scheme, ['http', 'https'], true) || !parse_url($url, PHP_URL_HOST)) {
+            $this->error['warning'] = $this->language->get('error_btcpay_server_url');
+            return false;
+        }
+        $unchanged = $this->config->get('payment_coinsnap_provider') === 'btcpay'
+            && $url === rtrim((string)$this->config->get('payment_coinsnap_btcpay_server_url'), '/')
+            && $storeId === (string)$this->config->get('payment_coinsnap_btcpay_store_id')
+            && $apiKey === (string)$this->config->get('payment_coinsnap_btcpay_api_key');
+        if ($unchanged) {
+            return true;
+        }
+        try {
+            $response = (new \Coinsnap\Http\CurlClient())->request('GET', $url . '/api/v1/api-keys/current', [
+                'Accept' => 'application/json',
+                'Authorization' => 'token ' . $apiKey,
+            ]);
+            $key = $response->getStatus() === 200 ? json_decode($response->getBody(), true) : null;
+        } catch (\Throwable $e) {
+            $key = null;
+        }
+        $permissions = is_array($key) && is_array($key['permissions'] ?? null) ? $key['permissions'] : null;
+        if ($permissions === null || !self::btcpayKeyIsAcceptable($permissions, $storeId)) {
+            $this->log->write('Coinsnap: BTCPay API key refused (not limited to the configured store, or not readable)');
+            $this->error['warning'] = $this->language->get('error_btcpay_api_key_scope');
+            return false;
+        }
+        return true;
+    }
+
+    // Every permission must be "btcpay.store.<name>:<storeId>"; one without a store ID works for all stores.
+    public static function btcpayKeyIsAcceptable(array $permissions, string $storeId): bool {
+        if ($permissions === [] || $storeId === '') {
+            return false;
+        }
+        foreach ($permissions as $permission) {
+            [$policy, $scope] = array_pad(explode(':', (string)$permission, 2), 2, '');
+            if (strpos($policy, 'btcpay.store.') !== 0 || $scope !== $storeId) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function secretHint(string $value): string {
+        return $value === '' ? '' : '••••••••' . substr($value, -4);
     }
 }

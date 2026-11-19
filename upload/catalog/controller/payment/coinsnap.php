@@ -9,7 +9,9 @@ if(!defined('COINSNAP_SERVER_PATH')){define( 'COINSNAP_SERVER_PATH', 'stores' );
 require_once(DIR_EXTENSION.'coinsnap/library/loader.php');
 require_once(DIR_EXTENSION.'coinsnap/system/library/coinsnap/Signature.php');
 require_once(DIR_EXTENSION.'coinsnap/system/library/coinsnap/InvoiceDecision.php');
+require_once(DIR_EXTENSION.'coinsnap/system/library/coinsnap/InvoiceData.php');
 
+use CoinsnapOpencart\InvoiceData;
 use CoinsnapOpencart\InvoiceDecision;
 use CoinsnapOpencart\Signature;
 
@@ -330,8 +332,8 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
 
         // The order total is stored in the default currency; convert it to the currency the customer pays in.
         $amount = round((float) $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false), 2);
-        $buyerEmail = $order_info['email'];
-	$buyerName =  $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'];
+        $buyerEmail = trim((string) $order_info['email']) !== '' ? (string) $order_info['email'] : null;
+        $buyerName = trim(html_entity_decode($order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'], ENT_QUOTES, 'UTF-8'));
 	$currency = $order_info['currency_code'];
 
         $checkInvoice = $this->checkAmount($amount, strtoupper($currency));
@@ -350,10 +352,8 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
         }
 
         $redirectUrl = (!empty($this->config->get('payment_coinsnap_returnurl')))? $this->config->get('payment_coinsnap_returnurl') : HTTP_SERVER.'index.php?route=checkout/success';
-        $metadata = ['orderNumber' => $order_id, 'customerName' => $buyerName];
-        if ($this->getProvider() === 'btcpay') {
-            $metadata['orderId'] = $order_id;
-        }
+        // orderId stays the order ID, which the webhook loads the order by (metadata.orderId on BTCPay).
+        $metadata = $this->invoiceMetadata($order_info);
         $redirectAutomatically = ($this->config->get('payment_coinsnap_autoredirect') > 0);
 
         try {
@@ -404,6 +404,33 @@ class Coinsnap extends \Opencart\System\Engine\Controller	{
         $this->clearCart();
         $this->sessionClear();
         $this->response->redirect($invoiceData['checkoutLink']);
+    }
+
+    // Order, products and totals as invoice metadata; amounts in the currency the customer pays in.
+    private function invoiceMetadata(array $order_info): array {
+        $order_id = (int) $order_info['order_id'];
+        $convert = function ($value) use ($order_info) {
+            return (float) $this->currency->format((float) $value, $order_info['currency_code'], $order_info['currency_value'], false);
+        };
+
+        // Recorded by the settings page: the catalog does not know the (possibly renamed) admin folder.
+        $adminUrl = (string) $this->config->get('payment_coinsnap_admin_url');
+        $route = version_compare(VERSION, '4.0.2.0', '>=') ? 'sale/order.info' : 'sale/order|info';
+        $installed = json_decode((string) @file_get_contents(DIR_EXTENSION . 'coinsnap/install.json'), true);
+
+        return InvoiceData::metadata(
+            $order_info,
+            $this->model_checkout_order->getProducts($order_id),
+            $this->model_checkout_order->getTotals($order_id),
+            $convert,
+            [
+                'orderUrl' => $adminUrl !== '' ? $adminUrl . 'index.php?route=' . $route . '&order_id=' . $order_id : '',
+                'platformVersion' => VERSION,
+                'pluginVersion' => is_array($installed) ? (string) ($installed['version'] ?? '') : '',
+                'language' => (string) $this->config->get('config_language'),
+                'couponCode' => (string) ($this->session->data['coupon'] ?? ''),
+            ]
+        );
     }
 
     public function update_payment($order_id, $invoice_id, $order_status){

@@ -322,6 +322,9 @@ class Coinsnap extends \Opencart\System\Engine\Controller {
                 $this->request->post['payment_coinsnap_webhook'] = '';
             }
             
+            // The catalog cannot know the admin folder; invoices link to the order with it.
+            $this->request->post['payment_coinsnap_admin_url'] = HTTP_SERVER;
+
             $this->model_setting_setting->editSetting('payment_coinsnap', $this->request->post);
             
             $provider = ($this->request->post['payment_coinsnap_provider'] === 'btcpay')? 'btcpay' : 'coinsnap';
